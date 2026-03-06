@@ -129,11 +129,8 @@ async function getStats() {
 // --- Rendering ---
 function renderResults(songs, query) {
     const container = document.getElementById('results');
-    const emptyState = document.getElementById('empty-state');
     const queryDisplay = document.getElementById('query-display');
     const queryText = document.getElementById('query-text');
-
-    emptyState.classList.add('hidden');
 
     if (query) {
         queryDisplay.classList.remove('hidden');
@@ -513,7 +510,8 @@ async function performSearch(query) {
         renderHistory();
     } catch (err) {
         loading.classList.add('hidden');
-        results.innerHTML = `<div class="empty-state"><p>Search failed: ${escapeHtml(err.message)}</p></div>`;
+        // Silently fall back to a surprise search
+        performSurprise(null);
     }
 }
 
@@ -530,7 +528,8 @@ async function performSurprise(category) {
         renderResults(data.songs, data.query);
     } catch (err) {
         loading.classList.add('hidden');
-        results.innerHTML = `<div class="empty-state"><p>Suggestion failed: ${escapeHtml(err.message)}</p></div>`;
+        // Silently show nothing rather than an error
+        results.innerHTML = '';
     }
 }
 
