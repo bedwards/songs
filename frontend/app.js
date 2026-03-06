@@ -182,7 +182,7 @@ function renderResults(songs, query) {
 
     function toTitleCase(str) {
         const minor = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'in', 'on', 'at', 'to', 'by', 'of', 'up', 'as', 'is', 'it']);
-        return str.replace(/\w+/g, (word, i) => {
+        return str.replace(/[\w][\w''']*/g, (word, i) => {
             if (i === 0 || !minor.has(word.toLowerCase())) {
                 return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
             }
