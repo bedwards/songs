@@ -174,6 +174,11 @@ function renderResults(songs, query) {
             t = fallbackTitle(content);
         }
 
+        // If title still contains digits, replace with first 4 words from content
+        if (/\d/.test(t)) {
+            t = fallbackTitle(content);
+        }
+
         // Final safety: never start with "Title:"
         t = t.replace(/^Title:\s*/i, '').trim();
 
