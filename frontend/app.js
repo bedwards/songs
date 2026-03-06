@@ -689,10 +689,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load song count
     getStats().then(data => {
+        const rounded = Math.floor(data.total_songs / 1000) * 1000;
         document.getElementById('song-count').textContent =
-            `${data.total_songs.toLocaleString()} songs in catalog`;
+            `${rounded.toLocaleString()}+ songs in catalog`;
     }).catch(() => {
-        document.getElementById('song-count').textContent = '2,300+ songs in catalog';
+        document.getElementById('song-count').textContent = '2,000+ songs in catalog';
     });
 
     // Auto-load a random surprise on page load so Kevin sees songs right away
