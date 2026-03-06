@@ -240,7 +240,8 @@ body {
 .surprise-row {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: flex-start;
+  gap: 0.5rem;
   margin-top: 1rem;
   flex-wrap: wrap;
 }
@@ -278,28 +279,29 @@ body {
   flex-wrap: wrap;
 }
 
-.pill {
-  padding: 0.35rem 0.8rem;
-  background: transparent;
+.surprise-cat-btn {
+  padding: 0.5rem 0.9rem;
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-family: var(--font-sans);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
-.pill:hover {
-  color: var(--text-secondary);
-  border-color: var(--text-muted);
-}
-
-.pill.active {
+.surprise-cat-btn:hover {
   color: var(--accent);
   border-color: var(--accent);
   background: rgba(245, 158, 11, 0.08);
+  transform: translateY(-1px);
+}
+
+.surprise-cat-btn:active {
+  transform: translateY(0);
 }
 
 /* --- Query Display --- */

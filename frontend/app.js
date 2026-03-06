@@ -557,18 +557,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Surprise Me
+    // Surprise Me — main button picks from all categories
     document.getElementById('surprise-btn').addEventListener('click', () => {
-        const activePill = document.querySelector('.pill.active');
-        const category = activePill ? activePill.dataset.category || null : null;
-        performSurprise(category);
+        performSurprise(null);
     });
 
-    // Category pills
-    document.querySelectorAll('.pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
+    // Category buttons — each one directly triggers a surprise in that category
+    document.querySelectorAll('.surprise-cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            performSurprise(btn.dataset.category);
         });
     });
 

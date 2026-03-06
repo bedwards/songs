@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vibe Engine — Find Your Next Song</title>
-  <meta name="description" content="Search 2,300+ original songs by vibe, mood, scene, or style. Semantic search powered by AI embeddings. Built for musicians.">
+  <meta name="description"
+    content="Search 2,300+ original songs by vibe, mood, scene, or style. Semantic search powered by AI embeddings. Built for musicians.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
   <!-- Hero Section -->
   <header id="hero" class="hero">
@@ -27,37 +32,32 @@
   <main class="search-section">
     <div class="search-container">
       <div class="search-box" id="search-box">
-        <textarea
-          id="search-input"
+        <textarea id="search-input"
           placeholder="Describe the feeling, the scene, or the style...&#10;&#10;e.g. &quot;A melancholic acoustic ballad about driving through rain at 3am&quot;"
-          rows="3"
-          autocomplete="off"
-          spellcheck="false"
-        ></textarea>
+          rows="3" autocomplete="off" spellcheck="false"></textarea>
         <button id="search-btn" class="search-btn" aria-label="Search">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </button>
       </div>
 
-      <!-- Surprise Me row -->
+      <!-- Surprise Me buttons -->
       <div class="surprise-row">
-        <button id="surprise-btn" class="surprise-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button id="surprise-btn" class="surprise-btn" data-category="">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
           </svg>
           Surprise Me
         </button>
-        <div class="category-pills" id="category-pills">
-          <button class="pill active" data-category="">All</button>
-          <button class="pill" data-category="moods">Moods</button>
-          <button class="pill" data-category="scenes">Scenes</button>
-          <button class="pill" data-category="styles">Styles</button>
-          <button class="pill" data-category="themes">Themes</button>
-          <button class="pill" data-category="specific">Specific</button>
-        </div>
+        <button class="surprise-cat-btn" data-category="moods">😌 Mood</button>
+        <button class="surprise-cat-btn" data-category="scenes">🏔 Scene</button>
+        <button class="surprise-cat-btn" data-category="styles">🎸 Style</button>
+        <button class="surprise-cat-btn" data-category="themes">💭 Theme</button>
+        <button class="surprise-cat-btn" data-category="specific">🎯 Specific</button>
       </div>
 
       <!-- Query display -->
@@ -86,7 +86,8 @@
   <!-- Sidebar (Favorites & Albums) -->
   <aside id="sidebar" class="sidebar">
     <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
       </svg>
       <span class="sidebar-badge" id="sidebar-badge">0</span>
@@ -188,4 +189,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
