@@ -166,6 +166,7 @@ function renderResults(songs, query) {
         t = t.replace(/```\s*$/g, '');      // trailing ```
         t = t.replace(/^#+\s*/, '');        // # Markdown headers
         t = t.replace(/^Title:\s*/i, '');   // Title: prefix
+        t = t.replace(/^\d{2,4}[\s\-]+/, ''); // 326- or 1134- number prefixes
         t = t.trim();
 
         // Check if it's garbage (empty, just punctuation, or too short to be a real title)
