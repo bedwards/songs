@@ -222,12 +222,11 @@ function renderResults(songs, query) {
         <span class="result-title">${escapeHtml(song.title)}</span>
         <span class="result-match">${song.vibe_match}% match</span>
       </div>
-      <div class="result-credit">✦ Inspiration: ${escapeHtml(formatCredit(song.style))}</div>
+      ${song.style ? `<div class="result-credit">✦ Inspiration: ${escapeHtml(formatCredit(song.style))}</div>` : ''}
       <div class="result-meta">
         ${song.key ? `<span class="meta-tag">🎵 ${escapeHtml(song.key)}</span>` : ''}
         ${song.tempo ? `<span class="meta-tag">⏱ ${escapeHtml(song.tempo)}</span>` : ''}
       </div>
-      <div class="result-preview">${getPreview(song.full_content)}</div>
       <div class="result-actions" onclick="event.stopPropagation()">
         <button class="result-action-btn ${isFavorited(song.filename) ? 'favorited' : ''}"
                 onclick="handleFavoriteClick(event, ${i})" title="Favorite">♥</button>
