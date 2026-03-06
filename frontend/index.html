@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Engine — Find Your Next Song</title>
+  <meta name="description" content="Search 2,300+ original songs by vibe, mood, scene, or style. Semantic search powered by AI embeddings. Built for musicians.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <!-- Hero Section -->
+  <header id="hero" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="hero-accent">Vibe</span> Engine
+      </h1>
+      <p class="hero-subtitle">Describe a feeling. Discover a song.</p>
+      <p class="hero-count" id="song-count">Loading catalog...</p>
+    </div>
+  </header>
+
+  <!-- Search Section -->
+  <main class="search-section">
+    <div class="search-container">
+      <div class="search-box" id="search-box">
+        <textarea
+          id="search-input"
+          placeholder="Describe the feeling, the scene, or the style...&#10;&#10;e.g. &quot;A melancholic acoustic ballad about driving through rain at 3am&quot;"
+          rows="3"
+          autocomplete="off"
+          spellcheck="false"
+        ></textarea>
+        <button id="search-btn" class="search-btn" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Surprise Me row -->
+      <div class="surprise-row">
+        <button id="surprise-btn" class="surprise-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          Surprise Me
+        </button>
+        <div class="category-pills" id="category-pills">
+          <button class="pill active" data-category="">All</button>
+          <button class="pill" data-category="moods">Moods</button>
+          <button class="pill" data-category="scenes">Scenes</button>
+          <button class="pill" data-category="styles">Styles</button>
+          <button class="pill" data-category="themes">Themes</button>
+          <button class="pill" data-category="specific">Specific</button>
+        </div>
+      </div>
+
+      <!-- Query display -->
+      <div id="query-display" class="query-display hidden">
+        <span class="query-label">Searched for:</span>
+        <span class="query-text" id="query-text"></span>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Finding your vibe...</p>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="results"></div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="empty-state">
+      <img src="images/empty-state.jpg" alt="" class="empty-state-img">
+      <p>Type a vibe above or hit <strong>Surprise Me</strong> to discover songs</p>
+    </div>
+  </main>
+
+  <!-- Sidebar (Favorites & Albums) -->
+  <aside id="sidebar" class="sidebar">
+    <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span class="sidebar-badge" id="sidebar-badge">0</span>
+    </button>
+
+    <div class="sidebar-panel" id="sidebar-panel">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" data-tab="favorites">
+          ♥ Favorites <span id="fav-count">(0)</span>
+        </button>
+        <button class="sidebar-tab" data-tab="albums">
+          ♫ Setlists <span id="album-count">(0)</span>
+        </button>
+        <button class="sidebar-tab" data-tab="history">
+          ↻ Recent
+        </button>
+      </div>
+
+      <!-- Favorites Tab -->
+      <div class="tab-content active" id="tab-favorites">
+        <div id="favorites-list" class="sidebar-list"></div>
+        <div id="favorites-empty" class="sidebar-empty">
+          <p>♥ songs to save them here</p>
+        </div>
+      </div>
+
+      <!-- Albums Tab -->
+      <div class="tab-content" id="tab-albums">
+        <button id="create-album-btn" class="create-album-btn">+ New Setlist</button>
+        <div id="albums-list" class="sidebar-list"></div>
+        <div id="albums-empty" class="sidebar-empty">
+          <p>Create setlists to organize songs for gigs</p>
+        </div>
+      </div>
+
+      <!-- History Tab -->
+      <div class="tab-content" id="tab-history">
+        <div id="history-list" class="sidebar-list"></div>
+        <div id="history-empty" class="sidebar-empty">
+          <p>Your recent searches will appear here</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Song Detail Modal -->
+  <div id="song-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <h2 id="modal-title" class="modal-title"></h2>
+          <div class="modal-actions">
+            <button id="modal-fav-btn" class="modal-action-btn" title="Favorite">♥</button>
+            <button id="modal-add-to-album" class="modal-action-btn" title="Add to Setlist">♫+</button>
+            <button id="modal-close" class="modal-action-btn modal-close-btn" title="Close">✕</button>
+          </div>
+        </div>
+        <div class="modal-meta">
+          <span id="modal-style" class="meta-tag"></span>
+          <span id="modal-key" class="meta-tag"></span>
+          <span id="modal-tempo" class="meta-tag"></span>
+          <span id="modal-match" class="meta-tag match-tag"></span>
+        </div>
+      </div>
+      <pre id="modal-content" class="modal-song-content"></pre>
+    </div>
+  </div>
+
+  <!-- Album Detail Modal -->
+  <div id="album-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content album-modal-content">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <input id="album-name-input" class="album-name-input" placeholder="Setlist Name" maxlength="80">
+          <div class="modal-actions">
+            <button id="album-export-btn" class="modal-action-btn" title="Export">⬇</button>
+            <button id="album-delete-btn" class="modal-action-btn danger" title="Delete">🗑</button>
+            <button id="album-close" class="modal-action-btn modal-close-btn" title="Close">✕</button>
+          </div>
+        </div>
+      </div>
+      <div id="album-songs" class="album-songs"></div>
+      <p id="album-songs-empty" class="sidebar-empty">Drag songs here or use the ♫+ button on any song</p>
+    </div>
+  </div>
+
+  <!-- Add to Album Popover -->
+  <div id="add-to-album-popover" class="popover hidden">
+    <div class="popover-header">Add to Setlist</div>
+    <div id="popover-albums" class="popover-list"></div>
+    <button id="popover-new-album" class="popover-new">+ New Setlist</button>
+  </div>
+
+  <footer class="footer">
+    <p>Vibe Engine — Semantic song search for musicians</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

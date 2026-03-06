@@ -1,59 +1,119 @@
-# Vibe Engine Specification
+# Vibe Engine — Semantic Song Search
 
-## Overview
-A fully serverless, 100% free-tier application hosted on GitHub Pages that allows musicians and producers to search a catalog of 3,000+ songs not by keyword or title, but by **vibe, emotion, and thematic texture**.
+## What It Is
+A web app that lets musicians search **2,352 original songs** by vibe, mood, scene, or style using AI-powered semantic search. Describe what you want to play, and the engine surfaces songs with full chord sheets — ready to perform.
 
-This architecture creates the *illusion* of an intelligent LLM understanding your query, but it is actually powered entirely by vector mathematics (Embeddings) and spatial geometry (Qdrant).
+**Live:** https://vibe-engine.pages.dev
 
-## The Core Concept: "It Feels Like an LLM, But It's Not"
+## How It Works
 
-When a user types: *"A melancholic acoustic song about driving through the desert at night regretting a phone call,"* they might assume an AI is reading every song and deciding which one fits. 
-
-**What's actually happening:**
-1. **The Translation (Hugging Face API):** We send the user's sentence to a free embedding model (like `all-MiniLM-L6-v2`) via Hugging Face's Inference API. This model is essentially a massive, pre-trained dictionary of human concepts. It doesn't "read" the songs; it translates the *concepts* of "melancholic," "desert," "night," and "regret" into a list of 384 numbers (a vector) representing a specific coordinate in "idea space."
-2. **The Geometry (Qdrant Cloud):** We take that coordinate and ask our free Qdrant Cloud database: *"Which of our 3,000 songs are sitting closest to this exact coordinate?"* Qdrant calculates the physical distance between the user's query vector and the song vectors we pre-calculated.
-3. **The Result (GitHub Pages):** The database instantly returns the 5 songs that mathematically share the most conceptual overlap with the query.
-
-Because the embedding model understands synonyms, context, and emotional weight, the search results feel incredibly intelligent and nuanced—without the massive compute cost, slow response times, or hallucination risks of actually prompting a generative LLM like ChatGPT or Claude.
-
-## Architecture & "Free Forever" Stack
-
-*   **Frontend Hosting:** GitHub Pages (Static HTML/JS/TailwindCSS) - **$0**
-*   **Vector Database:** Qdrant Cloud (1GB Free Tier Cluster) - **$0**
-*   **Real-time Embedding API:** Hugging Face Serverless Inference API - **$0**
-*   **Pre-computation (Ingestion):** Local Python script using Ollama or Hugging Face locally to embed the 3,000 markdown files once and upload them to Qdrant. - **$0**
-
-## The User Journey (For the Musician/Producer)
-
-1.  **The Landing Page:** A clean, dark-mode interface with a single, massive, auto-expanding text box.
-2.  **The Prompt:** The placeholder text suggests: *"Describe the feeling, the scene, or the style. (e.g., 'An upbeat, foot-stomping bluegrass track about whiskey and regret' or 'A quiet, devastating ballad about empty houses')."*
-3.  **The Search:** Upon pressing Enter:
-    *   *Browser -> Hugging Face API (translates query to vector, ~150ms).*
-    *   *Browser -> Qdrant Cloud API (searches 3,000 vectors, ~50ms).*
-4.  **The Results:** The UI smoothly transitions to display the Top 5 most relevant songs.
-    *   Each result shows the title, a "Vibe Match" percentage (derived from the cosine similarity score), and the first verse/chorus snippet.
-    *   Clicking a result expands it to show the full lyrics directly from the Qdrant payload or by fetching the raw markdown from the GitHub repository.
-
-## Data Structure
-
-The pre-computed dataset in Qdrant will look like this:
-
-```json
-{
-  "id": "UUID-based-on-filename",
-  "vector": [0.034, -0.112, 0.443], // 384 dimensions
-  "payload": {
-    "filename": "songs/001-dust-and-thunder.md",
-    "title": "Dust and Thunder",
-    "lyrics": "The full text of the song...",
-    "chords": "[G] [C] [Dm] [Am]",
-    "length": 42 // Number of lines
-  }
-}
+```
+Kevin types: "a heartbroken waltz for an empty barstool"
+     ↓
+[Cloudflare Worker] → HuggingFace embeds query → 384-dim vector
+     ↓
+[Qdrant Cloud] → finds 10 nearest songs by cosine similarity
+     ↓
+Kevin gets ranked results with vibe match %, full chord sheets
 ```
 
-## Why This is the Killer App
+1. **Embedding (HuggingFace):** The query is converted to a 384-dimensional vector using `all-MiniLM-L6-v2`. This model understands synonyms, emotion, and context — "melancholy" and "sad" land near each other in vector space.
+2. **Search (Qdrant Cloud):** The vector is compared against 2,352 pre-embedded songs. Each song was embedded with its title, artist style, key, tempo, and lyrics combined.
+3. **Results:** Songs are ranked by cosine similarity and returned with the **exact raw content** from the source markdown files — chords, sections, everything.
 
-*   **Zero Maintenance:** No backend servers to patch, no databases to scale, no Docker containers to restart.
-*   **Instant Inspiration:** Your brother doesn't need to know the titles of the 3,000 songs you generated. He just needs to know what he wants to *play* today, and the engine surfaces the exact material.
-*   **Infinitely Scalable:** Whether you have 3,000 songs or 30,000, Qdrant's HNSW index structure means the search takes almost the exact same amount of time (~50 milliseconds).
+No LLM involved. No hallucinations. Pure vector math.
+
+## Architecture — Free Forever
+
+| Component | Service | Cost |
+|---|---|---|
+| Frontend | Cloudflare Pages | $0 |
+| API Proxy | Cloudflare Worker | $0 (100K req/day) |
+| Embeddings | HuggingFace Inference API | $0 (free credits) |
+| Vector DB | Qdrant Cloud (1GB free) | $0 |
+| Song Storage | Qdrant payload + GitHub | $0 |
+
+**Why Cloudflare Workers?** GitHub Pages would expose API keys client-side. The Worker keeps HuggingFace and Qdrant credentials server-side.
+
+## Features
+
+### Search
+- **Semantic search** — type vibes, moods, scenes, styles, or artist names
+- **10 results** ranked by vibe match percentage
+- **Full chord sheets** displayed exactly as stored in source files
+
+### Surprise Me
+- **150+ curated discovery queries** across 5 categories: moods, scenes, styles, themes, specific use cases
+- Shows the query used — so Kevin sees what kinds of searches work
+- Category filter pills (All / Moods / Scenes / Styles / Themes / Specific)
+
+### Favorites
+- Heart any song to save it (localStorage)
+- View all favorites in the sidebar
+
+### Setlists (Albums)
+- Create named setlists
+- Add songs from search results or favorites
+- Drag-to-reorder songs within a setlist
+- **Export** — downloads a plain text file with setlist name, numbered songs, and full chord sheets
+
+### Recent Searches
+- Last 20 searches saved (localStorage)
+- Click to re-run any past search
+
+## Song Catalog
+
+| Directory | Songs | Styles |
+|---|---|---|
+| `songs/` | 638 | Billy Strings, Townes Van Zandt, Guy Clark, and more |
+| `songs1/` | 714 | Todd Snider, Jesse Welles, and more |
+| `songs2/` | 1000 | Son Volt, and more |
+| **Total** | **2,352** | — |
+
+Each song is a markdown file with Ultimate Guitar-style format: title, style, key, tempo, chords, lyrics, and sections.
+
+## Project Structure
+
+```
+songs/
+├── frontend/          # Static site (Cloudflare Pages)
+│   ├── index.html
+│   ├── index.css
+│   ├── app.js
+│   └── images/
+├── worker/            # API proxy (Cloudflare Worker)
+│   ├── src/index.js   # /api/search, /api/suggest, /api/stats
+│   ├── src/queries.js # 150+ curated discovery queries
+│   ├── wrangler.toml
+│   └── package.json
+├── scripts/           # One-time ingestion
+│   ├── ingest.py      # Parse songs → embed via HF → upload to Qdrant
+│   ├── setup_qdrant.py
+│   └── requirements.txt
+├── songs/             # 638 songs
+├── songs1/            # 714 songs
+├── songs2/            # 1000 songs
+├── .env               # Secrets (gitignored)
+└── .gitignore
+```
+
+## Re-ingestion
+
+If songs are added or changed:
+```bash
+pip install -r scripts/requirements.txt
+python scripts/setup_qdrant.py    # recreate collection if needed
+python scripts/ingest.py          # embed & upload all songs (~60s)
+```
+
+## Deployment
+
+```bash
+# Worker
+cd worker && npx wrangler deploy
+
+# Frontend
+npx wrangler pages deploy frontend --project-name vibe-engine
+```
+
+Secrets are set via `wrangler secret put` (HUGGINGFACE_TOKEN, QDRANT_URL, QDRANT_API_KEY).

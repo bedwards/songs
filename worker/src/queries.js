@@ -1,0 +1,161 @@
+/**
+ * Curated discovery queries for the "Surprise Me" feature.
+ * Organized by category so we can optionally filter.
+ */
+export const DISCOVERY_QUERIES = {
+  moods: [
+    "a heartbroken waltz for an empty barstool",
+    "a furious punk anthem about corporate greed",
+    "a gentle lullaby for someone who can't sleep",
+    "a triumphant anthem about overcoming addiction",
+    "a bittersweet goodbye to a childhood home",
+    "a joyful celebration of a small town festival",
+    "a melancholy meditation on growing old alone",
+    "a defiant protest song about standing your ground",
+    "a tender love song whispered across a kitchen table",
+    "a mournful elegy for a friend who died too young",
+    "a wild, ecstatic song about falling in love at first sight",
+    "a brooding, dark song about jealousy and betrayal",
+    "a peaceful, contented song about having enough",
+    "a restless anthem for someone who can't sit still",
+    "a nostalgic song about the smell of your grandmother's cooking",
+    "a vengeful ballad about getting even",
+    "a hopeful song about starting over in a new city",
+    "a weary travelers song about being far from home",
+    "a laughing, irreverent song that doesn't take itself seriously",
+    "a song full of quiet rage simmering beneath the surface",
+    "a song that sounds like relief after a long hard year",
+    "a song about the loneliness of being surrounded by people",
+    "a song that makes you want to dance in your kitchen",
+    "a song about feeling invisible",
+    "a song about making peace with your mistakes",
+  ],
+  scenes: [
+    "sitting on a porch watching a thunderstorm roll in",
+    "driving through west Texas at 2am with the windows down",
+    "a train pulling out of a station at dawn",
+    "walking through an empty church in the afternoon light",
+    "a bonfire on the beach with old friends passing a bottle",
+    "standing in a cornfield watching the stars come out",
+    "a rainy Sunday morning in a cabin in the woods",
+    "the last dance at a wedding when everyone's drunk and happy",
+    "watching the sun set over the Mississippi River",
+    "a smoky bar in Nashville where nobody knows your name",
+    "hitchhiking through the mountains in early autumn",
+    "sitting in a diner at 3am after a breakup",
+    "fishing on a quiet lake at first light",
+    "the view from a freight train crossing the Great Plains",
+    "a dusty road in the delta after a summer rain",
+    "standing at a crossroads trying to decide which way to go",
+    "a parking lot after a concert when your ears are still ringing",
+    "the moment right before you walk on stage",
+    "a long drive home after a funeral",
+    "watching your kids play in the yard from the kitchen window",
+    "a late night conversation on a fire escape in Brooklyn",
+    "the first warm day of spring when you open all the windows",
+    "a ghost town in Nevada that time forgot",
+    "a crowded subway car where everyone looks exhausted",
+    "an old man playing chess alone in the park",
+  ],
+  styles: [
+    "high-energy flatpicking bluegrass with banjo and mandolin",
+    "something that sounds like early Townes Van Zandt",
+    "a slow burning country soul ballad",
+    "raw acoustic folk in the style of Bob Dylan's early work",
+    "honky tonk with pedal steel and a walking bass line",
+    "dark Appalachian murder ballad",
+    "outlaw country with a swagger like Waylon Jennings",
+    "fingerpicked acoustic guitar like Leo Kottke",
+    "rock and roll with a country twang",
+    "a bluesy shuffle with slide guitar",
+    "a Celtic-influenced folk song with fiddle",
+    "Texas swing with jazz chords",
+    "stripped down punk with three chords and the truth",
+    "a waltz in three-quarter time",
+    "a gospel-influenced song with call and response",
+    "something rowdy that sounds like a bar fight set to music",
+    "a gentle bossa nova influenced acoustic piece",
+    "a fast train beat like Johnny Cash",
+    "an atmospheric song with lots of reverb and space",
+    "a sea shanty about sailors and whiskey",
+    "old time string band music",
+    "a power ballad with big dynamics",
+    "a spoken word piece over acoustic guitar",
+    "something that sounds like it was recorded in a living room",
+    "a marching song for a ragtag army of misfits",
+  ],
+  themes: [
+    "songs about coming home after years away",
+    "songs about rivers and redemption",
+    "songs about fathers and sons who can't talk to each other",
+    "songs about working hard for not enough money",
+    "songs about the open road and what it costs to stay on it",
+    "songs about small towns with big secrets",
+    "songs about whiskey as both medicine and poison",
+    "songs about trains as metaphors for freedom",
+    "songs about the gap between who you are and who you wanted to be",
+    "songs about the courage to be vulnerable",
+    "songs about dogs and the people who love them",
+    "songs about getting older and not minding it",
+    "songs about political corruption and broken promises",
+    "songs about finding God in unexpected places",
+    "songs about the ocean and all the things it hides",
+    "songs about prison and what you think about inside",
+    "songs about musicians who never made it big",
+    "songs about sisters who protect each other",
+    "songs about losing your religion and finding something better",
+    "songs about the land and what grows on it",
+    "songs about ghosts that aren't really ghosts",
+    "songs about gambling everything on one last chance",
+    "songs about building something with your own hands",
+    "songs about saying what you mean for once in your life",
+    "songs about the kindness of strangers",
+  ],
+  specific: [
+    "something perfect for a late night campfire singalong",
+    "a song to play at an open mic that will make people cry",
+    "something fun and fast for a Saturday night house party",
+    "a song for someone going through a divorce",
+    "something to play while cooking dinner on a Sunday",
+    "a song for a long road trip through the mountains",
+    "something to play for your mother on her birthday",
+    "a song about America that isn't afraid to criticize it",
+    "something that would sound good just with voice and guitar",
+    "a crowd pleaser that everyone can sing along to",
+    "a deep cut that nobody knows but everyone loves when they hear it",
+    "something to calm you down when the world feels like too much",
+    "a love song that isn't cheesy",
+    "something with a killer guitar riff",
+    "a song that tells a complete story with a twist ending",
+    "something that sounds like it was written a hundred years ago",
+    "a duet about two people who almost fell in love",
+    "the perfect first song for a live set",
+    "a song that builds from a whisper to a roar",
+    "something Kevin would love to play live",
+    "a song for when you need to remember why you play music",
+    "something that would make a great encore",
+    "a toe-tapper with clever wordplay",
+    "a song with a melody you can't get out of your head",
+    "a song that sounds simple but is secretly brilliant",
+  ],
+};
+
+/**
+ * Get a random query from any category
+ */
+export function getRandomQuery(category = null) {
+  let pool;
+  if (category && DISCOVERY_QUERIES[category]) {
+    pool = DISCOVERY_QUERIES[category];
+  } else {
+    pool = Object.values(DISCOVERY_QUERIES).flat();
+  }
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/**
+ * Get all categories
+ */
+export function getCategories() {
+  return Object.keys(DISCOVERY_QUERIES);
+}
