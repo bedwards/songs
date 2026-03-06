@@ -237,12 +237,28 @@ body {
 }
 
 /* --- Surprise Me Row --- */
+/* --- Discovery Section --- */
+.discovery-section {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.discovery-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
+}
+
 .surprise-row {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 0.5rem;
-  margin-top: 1rem;
   flex-wrap: wrap;
 }
 
