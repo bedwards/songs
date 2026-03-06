@@ -173,6 +173,9 @@ function renderResults(songs, query) {
             t = fallbackTitle(content);
         }
 
+        // Final safety: never start with "Title:"
+        t = t.replace(/^Title:\s*/i, '').trim();
+
         return toTitleCase(t);
     }
 
