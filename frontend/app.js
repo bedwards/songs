@@ -148,9 +148,63 @@ function renderResults(songs, query) {
         const curvedRange = curvedTop - curvedBottom;
         songs = songs.map(s => ({
             ...s,
-            title: s.title.replace(/^Title:\s*/i, ''),
+            title: cleanTitle(s.title, s.full_content),
             vibe_match: Math.round(curvedBottom + ((s.vibe_match - rawMin) / rawRange) * curvedRange)
         }));
+    }
+
+    /**
+     * Clean up a song title:
+     * - Strip "Title: ", code fences, markdown headers
+     * - Title Case the result
+     * - If the result is garbage, use the first 4 words from the song content
+     */
+    function cleanTitle(raw, content) {
+        let t = (raw || '').trim();
+        // Strip common junk
+        t = t.replace(/^```\w*\s*/g, '');  // ```text, ```markdown, ```
+        t = t.replace(/```\s*$/g, '');      // trailing ```
+        t = t.replace(/^#+\s*/, '');        // # Markdown headers
+        t = t.replace(/^Title:\s*/i, '');   // Title: prefix
+        t = t.trim();
+
+        // Check if it's garbage (empty, just punctuation, or too short to be a real title)
+        if (!t || t.length < 2 || /^[\W\d_]+$/.test(t)) {
+            t = fallbackTitle(content);
+        }
+
+        return toTitleCase(t);
+    }
+
+    function toTitleCase(str) {
+        const minor = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'in', 'on', 'at', 'to', 'by', 'of', 'up', 'as', 'is', 'it']);
+        return str.replace(/\w+/g, (word, i) => {
+            if (i === 0 || !minor.has(word.toLowerCase())) {
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }
+            return word.toLowerCase();
+        });
+    }
+
+    function fallbackTitle(content) {
+        if (!content) return 'Untitled';
+        // Find the first line that looks like actual song content (not metadata/fences)
+        const lines = content.split('\n');
+        for (const line of lines) {
+            const cleaned = line.trim()
+                .replace(/^```\w*\s*/, '')
+                .replace(/^#+\s*/, '')
+                .replace(/^Title:\s*/i, '')
+                .replace(/^Style[:\s].*/i, '')
+                .replace(/^Key[:\s].*/i, '')
+                .replace(/^Tempo[:\s].*/i, '')
+                .trim();
+            if (cleaned.length > 3 && !/^[\[(]/.test(cleaned) && !/^```/.test(cleaned)) {
+                // Take first 4 words
+                return cleaned.split(/\s+/).slice(0, 4).join(' ');
+            }
+        }
+        return 'Untitled';
     }
 
     container.innerHTML = songs.map((song, i) => `
