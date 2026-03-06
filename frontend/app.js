@@ -137,6 +137,21 @@ function renderResults(songs, query) {
         queryText.textContent = `"${query}"`;
     }
 
+    // Grade on a curve: top result 89-100%, lowest ≥67%, rest proportionally between
+    if (songs.length > 0) {
+        const rawScores = songs.map(s => s.vibe_match);
+        const rawMax = Math.max(...rawScores);
+        const rawMin = Math.min(...rawScores);
+        const curvedTop = 89 + Math.round(Math.random() * 11); // 89-100
+        const curvedBottom = 67 + Math.round(Math.random() * 8); // 67-75
+        const rawRange = rawMax - rawMin || 1;
+        const curvedRange = curvedTop - curvedBottom;
+        songs = songs.map(s => ({
+            ...s,
+            vibe_match: Math.round(curvedBottom + ((s.vibe_match - rawMin) / rawRange) * curvedRange)
+        }));
+    }
+
     container.innerHTML = songs.map((song, i) => `
     <div class="result-card" data-index="${i}" onclick="openSong(${i})">
       <div class="result-header">
