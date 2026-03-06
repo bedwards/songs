@@ -148,6 +148,7 @@ function renderResults(songs, query) {
         const curvedRange = curvedTop - curvedBottom;
         songs = songs.map(s => ({
             ...s,
+            title: s.title.replace(/^Title:\s*/i, ''),
             vibe_match: Math.round(curvedBottom + ((s.vibe_match - rawMin) / rawRange) * curvedRange)
         }));
     }
