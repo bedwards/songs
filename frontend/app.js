@@ -224,10 +224,10 @@ function openSong(index) {
     currentSong = song;
 
     document.getElementById('modal-title').textContent = song.title;
-    document.getElementById('modal-style').textContent = formatCreditFull(song.style);
-    document.getElementById('modal-key').textContent = song.key ? `🎵 ${song.key}` : '';
-    document.getElementById('modal-tempo').textContent = song.tempo ? `⏱ ${song.tempo}` : '';
+    document.getElementById('modal-key').textContent = song.key || '';
+    document.getElementById('modal-tempo').textContent = song.tempo || '';
     document.getElementById('modal-match').textContent = song.vibe_match ? `${song.vibe_match}% match` : '';
+    document.getElementById('modal-credit').textContent = formatCreditFull(song.style);
 
     // Display content exactly as it appears in the source file
     document.getElementById('modal-content').textContent = cleanContent(song.full_content);
