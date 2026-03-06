@@ -501,9 +501,7 @@ function rerunSearch(query) {
 async function performSearch(query) {
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
-    const emptyState = document.getElementById('empty-state');
 
-    emptyState.classList.add('hidden');
     results.innerHTML = '';
     loading.classList.remove('hidden');
 
@@ -522,9 +520,7 @@ async function performSearch(query) {
 async function performSurprise(category) {
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
-    const emptyState = document.getElementById('empty-state');
 
-    emptyState.classList.add('hidden');
     results.innerHTML = '';
     loading.classList.remove('hidden');
 
@@ -683,4 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(() => {
         document.getElementById('song-count').textContent = '2,300+ songs in catalog';
     });
+
+    // Auto-load a random surprise on page load so Kevin sees songs right away
+    performSurprise(null);
 });
