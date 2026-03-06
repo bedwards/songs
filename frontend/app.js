@@ -6,6 +6,39 @@
 // --- Config ---
 const API_BASE = 'https://vibe-engine-api.brian-mabry-edwards.workers.dev';
 
+// --- Songwriter Attribution ---
+// Maps band/group names to their primary songwriter
+const SONGWRITER_MAP = {
+    'Son Volt': 'Jay Farrar (Son Volt)',
+    'The Beatles': 'Lennon/McCartney (The Beatles)',
+    'The Flatlanders': 'Joe Ely, Jimmie Dale Gilmore & Butch Hancock (The Flatlanders)',
+    'Wilco': 'Jeff Tweedy (Wilco)',
+    'Hank Williams Jr.': 'Hank Williams Jr.',
+};
+
+/**
+ * Format the songwriter credit line for a song's style field.
+ * Returns something like: "An original song · CC BY 4.0 · Inspired by the songwriting of Jay Farrar (Son Volt)"
+ */
+function formatCredit(style) {
+    if (!style) return '';
+    // Extract the artist name from various "Style of: X" or "Style: X" formats
+    let artist = style;
+    if (style.startsWith('Style of: ')) artist = style.replace('Style of: ', '');
+    else if (style.startsWith('Style: ')) artist = style.replace('Style: ', '');
+
+    // Map bands to primary songwriters
+    const songwriter = SONGWRITER_MAP[artist] || artist;
+
+    return songwriter;
+}
+
+function formatCreditFull(style) {
+    const songwriter = formatCredit(style);
+    if (!songwriter) return '';
+    return `Original song · Free to perform (CC0) · Inspiration: ${songwriter}`;
+}
+
 // --- State ---
 let currentSong = null;
 let currentAlbumId = null;
@@ -113,8 +146,8 @@ function renderResults(songs, query) {
         <span class="result-title">${escapeHtml(song.title)}</span>
         <span class="result-match">${song.vibe_match}% match</span>
       </div>
+      <div class="result-credit">✦ Inspiration: ${escapeHtml(formatCredit(song.style))}</div>
       <div class="result-meta">
-        ${song.style ? `<span class="meta-tag">🎸 ${escapeHtml(song.style)}</span>` : ''}
         ${song.key ? `<span class="meta-tag">🎵 ${escapeHtml(song.key)}</span>` : ''}
         ${song.tempo ? `<span class="meta-tag">⏱ ${escapeHtml(song.tempo)}</span>` : ''}
       </div>
@@ -158,6 +191,18 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+/**
+ * Strip markdown code fences from song content.
+ * Removes opening ``` / ```markdown / ```text and closing ```
+ */
+function cleanContent(content) {
+    if (!content) return '';
+    return content
+        .replace(/^```(?:markdown|text)?\s*\n?/gm, '')
+        .replace(/\n?```\s*$/gm, '')
+        .trim();
+}
+
 // --- Song Modal ---
 function openSong(index) {
     const song = window._currentResults ? window._currentResults[index] :
@@ -166,13 +211,13 @@ function openSong(index) {
     currentSong = song;
 
     document.getElementById('modal-title').textContent = song.title;
-    document.getElementById('modal-style').textContent = song.style ? `🎸 ${song.style}` : '';
+    document.getElementById('modal-style').textContent = formatCreditFull(song.style);
     document.getElementById('modal-key').textContent = song.key ? `🎵 ${song.key}` : '';
     document.getElementById('modal-tempo').textContent = song.tempo ? `⏱ ${song.tempo}` : '';
     document.getElementById('modal-match').textContent = song.vibe_match ? `${song.vibe_match}% match` : '';
 
     // Display content exactly as it appears in the source file
-    document.getElementById('modal-content').textContent = song.full_content;
+    document.getElementById('modal-content').textContent = cleanContent(song.full_content);
 
     const favBtn = document.getElementById('modal-fav-btn');
     favBtn.classList.toggle('favorited', isFavorited(song.filename));
