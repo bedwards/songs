@@ -97,8 +97,18 @@ body {
   position: absolute;
   inset: 0;
   background: url('images/hero-bg.jpg') center/cover no-repeat;
-  opacity: 0.5;
+  opacity: 0.35;
+  filter: saturate(0.5) contrast(0.9);
   animation: heroFadeIn 1.5s ease;
+}
+
+/* Center wash-out / vignette burn */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(10, 14, 26, 0.7) 0%, rgba(10, 14, 26, 0.2) 60%, transparent 100%);
+  z-index: 0;
 }
 
 @keyframes heroFadeIn {
@@ -108,7 +118,7 @@ body {
   }
 
   to {
-    opacity: 0.5;
+    opacity: 0.35;
     transform: scale(1);
   }
 }
@@ -118,6 +128,13 @@ body {
   text-align: center;
   z-index: 1;
   animation: slideUp 0.8s ease;
+  background: rgba(10, 14, 26, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 2rem 3rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 @keyframes slideUp {
